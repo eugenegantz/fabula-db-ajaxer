@@ -16,6 +16,15 @@
 
 
 			/**
+			 * Короткий ctx.querySelectorAll
+			 * */
+			_qsa: function(selector, node) {
+				node = node || document;
+				return Array.prototype.slice.call(node.querySelectorAll(selector), 0);
+			},
+
+
+			/**
 			 * Инициализация
 			 * */
 			"init": function() {
@@ -40,6 +49,7 @@
 
 				console.log("Ajaxer init: done");
 
+				self.selectTab('query');
 				self.close();
 			},
 
@@ -51,21 +61,142 @@
 				var body = document.querySelector("body");
 
 				var css = '' +
-					' .fabula-ajaxer {position: absolute; left: 0; top: 0; min-width: 800px; height: auto; margin: 16px; padding: 16px; background-color: #FFF; border: 2px solid black; box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.35); font-size: 12px; font-family: sans-serif;}' +
-					' .fabula-ajaxer__input {position:relative; display:block; width:100%; height:auto; padding:2px; border:1px solid blue; border-radius:0px; margin:5px 0; border: 2px solid black;}' +
-					' .fabula-ajaxer__submit {background: black; border: black; border-radius: 0; padding: 5px; color: white; font-weight: bold; cursor:pointer;}' +
-					' .fabula-ajaxer__submit:hover  {background-color:blue; color:yellow;}' +
-					' .fabula-ajaxer__table {position:relative; width:100%; height:auto; margin-bottom:16px; border-spacing:0px;}' +
-					' .fabula-ajaxer__table-container {position:relative; width:1024px; height:480px; overflow-y:scroll; resize:both;}' +
-					' .fabula-ajaxer__devider-vertical {position:relative; margin:10px 0; border-top:1px dotted #e6e6e6;}' +
-					' .fabula-ajaxer__table-row {padding:5px; border:none; margin:0;}' +
-					' .fabula-ajaxer__table-row:nth-child(odd) {background-color:#e6e6e6;}' +
-					' .fabula-ajaxer__table-row:hover {background-color:blue; color:yellow;}' +
-					' .fabula-ajaxer__table-hrow {background-color:black; color:white; font-weight:bold;}' +
-					' .fabula-ajaxer__table-hcol {padding:5px;}' +
-					' .fabula-ajaxer__table-col {padding:2px; border:1px solid black;}' +
-					' .fabula-ajaxer_hidden {display:none;}' +
-					'';
+					'.fabula-ajaxer {' +
+						'position: absolute; ' +
+						'left: 0; ' +
+						'top: 0; ' +
+						'min-width: 800px; ' +
+						'height: auto; ' +
+						'margin: 16px; ' +
+						'padding: 16px; ' +
+						'background-color: #FFF; ' +
+						'border: 2px solid black; ' +
+						'box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.35); ' +
+						'font-size: 12px; ' +
+						'font-family: sans-serif;' +
+					'}' +
+
+					'.fabula-ajaxer__input {' +
+						'position: relative;' +
+						'display: block; ' +
+						'width: 100%;' +
+						'height: auto;' +
+						'padding: 2px;' +
+						'border: 1px solid blue;' +
+						'border-radius: 0px;' +
+						'margin: 5px 0;' +
+						'border: 2px solid black;' +
+						'box-sizing: border-box;' +
+					'}' +
+
+					'.fabula-ajaxer__input:focus { outline:none; border-color:blue }' +
+
+					'.fabula-ajaxer__btn {' +
+						'background: black;' +
+						'border: black;' +
+						'border-radius: 0;' +
+						'padding: 5px;' +
+						'color: white;' +
+						'font-weight: bold;' +
+						'cursor: pointer;' +
+					'}' +
+
+					'.fabula-ajaxer__btn:hover {' +
+						'background-color: blue;' +
+						'color: yellow;' +
+					'}' +
+
+					'.fabula-ajaxer__btn:focus {' +
+						'background-color: blue;' +
+						'color: yellow;' +
+					'}' +
+
+					'.fabula-ajaxer-btn-group {' +
+						'border: 2px solid black;' +
+						'display: inline-block;' +
+					'}' +
+
+					'.fabula-ajaxer-btn-group__btn {' +
+						'margin: 0;' +
+						'display: inline-block;' +
+						'background: white;' +
+						'color: black;' +
+					'}' +
+
+					'.fabula-ajaxer-btn-group__btn_active {' +
+						'background: black;' +
+						'color: white;' +
+					'}' +
+
+					'.fabula-ajaxer__submit {}'+
+
+					'.fabula-ajaxer__submit:hover {' +
+						'background-color: blue;' +
+						'color: yellow;' +
+					'}' +
+
+					'.fabula-ajaxer__table {' +
+						'position: relative;'+
+						'width: 100%;'+
+						'height: auto;'+
+						'margin-bottom: 16px;'+
+						'border-spacing: 0px;' +
+						'border-collapse: collapse;' +
+						'border-sizing: border-box'+
+					'}'+
+
+					'.fabula-ajaxer__table-container {' +
+						'position: relative;' +
+						'width: 1024px;' +
+						'height: 480px;' +
+						'overflow-y: scroll;' +
+						'resize: both;' +
+					'}' +
+
+					'.fabula-ajaxer__devider-vertical {' +
+						'position: relative;' +
+						'margin: 10px 0;' +
+						'border-top: 1px dotted #e6e6e6;' +
+					'}'+
+
+					'.fabula-ajaxer__table-row {' +
+						'padding: 5px;' +
+						'border: none;' +
+						'margin: 0;' +
+					'}'+
+
+					'.fabula-ajaxer__table-row:nth-child(odd) {' +
+						'background-color :#e6e6e6;' +
+					'}' +
+
+
+					'.fabula-ajaxer__table-row:hover {background-color:blue;' +
+						'color: yellow;' +
+					'}' +
+
+					'.fabula-ajaxer__table-hrow {background-color:black;' +
+						'color: white;' +
+						'font-weight: bold;' +
+					'}' +
+
+					'.fabula-ajaxer__table-hcol {' +
+						'padding: 5px;' +
+						'border: 2px solid black;' +
+						'border-right-color: white;' +
+					'}' +
+
+					'.fabula-ajaxer__table-hcol:last-child {' +
+						'border-right-color: black;' +
+					'}' +
+
+					'.fabula-ajaxer__table-col {' +
+						'padding: 2px;' +
+						'border: 2px solid black;' +
+					'}' +
+
+					'.fabula-ajaxer_hidden {' +
+						'display: none;' +
+					'}';
 
 				var styleElem = document.querySelector("#fabulaAjaxerStyles");
 
@@ -89,13 +220,23 @@
 					modalElem.className = "fabula-ajaxer";
 
 					modalElem.innerHTML = '' +
-						'<input type="text" class="fabula-ajaxer__input fabula-ajaxer-db-filename-input" value="main">' +
-						'<textarea class="fabula-ajaxer__input fabula-ajaxer-db-query">SELECT TOP 10 * FROM Movement</textarea>' +
-						'<div>' +
-							'<input type="submit" class="fabula-ajaxer__submit">' +
+						'<div class="fabula-ajaxer-btn-group fabula-ajaxer__pages">' +
+							'<div class="fabula-ajaxer__btn fabula-ajaxer-btn-group__btn fabula-ajaxer__tab-query">Запрос</div>' +
+							'<div class="fabula-ajaxer__btn fabula-ajaxer-btn-group__btn fabula-ajaxer__tab-script">Скрипт</div>' +
 						'</div>' +
-						'<div class="fabula-ajaxer__devider-vertical"></div>' +
-						'<div class="fabula-ajaxer__table-container"></div>';
+						'<div class="fabula-ajaxer__page">' +
+							'<input type="text" class="fabula-ajaxer__input fabula-ajaxer-db-filename-input" value="main">' +
+							'<textarea class="fabula-ajaxer__input fabula-ajaxer-db-query">SELECT TOP 10 * FROM Movement</textarea>' +
+							'<div>' +
+								'<input type="submit" class="fabula-ajaxer__btn fabula-ajaxer__submit">' +
+							'</div>' +
+							'<div class="fabula-ajaxer__devider-vertical"></div>' +
+							'<div class="fabula-ajaxer__table-container"></div>' +
+						'</div>' +
+						// '<div class="fabula-ajaxer__pages">' +
+							// '<textarea class="fabula-ajaxer__input fabula-ajaxer__db-postscript" placeholder="Здесь можно записать скрипт для выполнения"></textarea>' +
+						// '</div>' +
+						'';
 
 					body.appendChild(modalElem);
 				}
@@ -137,6 +278,18 @@
 						!this._keyPressed && (this._keyPressed = {});
 						delete this._keyPressed[e.keyCode];
 					}, false);
+
+				this._qsa('.fabula-ajaxer-btn-group__btn', this.el).forEach((elem) => {
+					elem.addEventListener('click', function() {
+						var modActive = 'fabula-ajaxer-btn-group__btn_active';
+
+						self._qsa('.fabula-ajaxer-btn-group__btn', this.parentNode).forEach((a) => {
+							a == this
+								? a.classList.add(modActive)
+								: a.classList.remove(modActive)
+						});
+					}, !1);
+				});
 
 				// ------------------------------------------------------------
 
@@ -214,6 +367,8 @@
 
 				// {"err":"","t":0.004,"recs":1,"fld":[{"Name":"uid","Type":"N","fType":3},{"Name":"Val","Type":"C","fType":202}],"res":[[221749,""]]}
 
+				self.lastDbRes = dbres;
+
 				var buildTable = function(dbres) {
 					var c, col, row,
 						stats = [];
@@ -283,6 +438,7 @@
 					dbFileName = arg.dbFileName;
 
 				self.ajaxStartDate = new Date();
+				self.lastDbRes = void 0;
 
 				Ajax(
 					"./db",
@@ -320,11 +476,20 @@
 			},
 
 
+			"selectTab": function(tabName) {
+				return;
+				var modActive = 'fabula-ajaxer-btn-group__btn_active';
+				this._qsa('.fabula-ajaxer__pages .' + modActive)[0].classList.remove(modActive);
+				this._qsa('.fabula-ajaxer__pages .fabula-ajaxer__tab-' + tabName)[0].classList.add(modActive);
+			},
+
+
 			/**
 			 * Открыть окно
 			 * */
 			"open": function() {
 				this.el.classList.remove("fabula-ajaxer_hidden");
+				this.el.querySelector('.fabula-ajaxer-db-query').focus();
 			},
 
 
@@ -337,7 +502,9 @@
 
 		};
 
-		new FabulaAjaxer();
+		if (!window._egUtils)
+			window._egUtils = Object.create(null);
 
+		window._egUtils.fabulaAjaxer = new FabulaAjaxer();
 	});
 })();
