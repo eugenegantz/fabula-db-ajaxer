@@ -265,7 +265,9 @@
 				this.el
 					.querySelector(".fabula-ajaxer-db-query")
 					.addEventListener("keydown", function(e) {
-						!this._keyPressed && (this._keyPressed = {});
+						if(!this._keyPressed)
+							this._keyPressed = {};
+
 						this._keyPressed[e.keyCode] = 1;
 
 						if (Object.keys(this._keyPressed).sort().join("-") == "13-18")
@@ -275,7 +277,9 @@
 				this.el
 					.querySelector(".fabula-ajaxer-db-query")
 					.addEventListener("keyup", function(e) {
-						!this._keyPressed && (this._keyPressed = {});
+						if (!this._keyPressed)
+							this._keyPressed = {};
+
 						delete this._keyPressed[e.keyCode];
 					}, false);
 
@@ -284,9 +288,11 @@
 						var modActive = 'fabula-ajaxer-btn-group__btn_active';
 
 						self._qsa('.fabula-ajaxer-btn-group__btn', this.parentNode).forEach((a) => {
-							a == this
-								? a.classList.add(modActive)
-								: a.classList.remove(modActive)
+							if (a == this) {
+								a.classList.add(modActive);
+							} {
+								a.classList.remove(modActive);
+							}
 						});
 					}, !1);
 				});
@@ -298,10 +304,11 @@
 
 					var pressedKeysStr = self.getPressedKeys().sort().join("-");
 
-					self.hotkeyEvents[pressedKeysStr]
-					&& self.hotkeyEvents[pressedKeysStr].forEach((keyEvent) => {
-						keyEvent.method()
-					});
+					if (self.hotkeyEvents[pressedKeysStr]) {
+						self.hotkeyEvents[pressedKeysStr].forEach((keyEvent) => {
+							keyEvent.method();
+						});
+					}
 				};
 
 
@@ -506,5 +513,9 @@
 			window._egUtils = Object.create(null);
 
 		window._egUtils.fabulaAjaxer = new FabulaAjaxer();
+
+		setInterval(function() {
+			window._egUtils.fabulaAjaxer.pressedKeys = {};
+		}, 1000 * 30);
 	});
 })();
