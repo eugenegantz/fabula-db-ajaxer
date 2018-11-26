@@ -455,6 +455,8 @@
 						"Src":      dbFileName,
 						"Sql":      query,
 						"Ok":       0,
+						"IDS":      db.IDS,
+						"User":     db.User,
 						"Cache":    "*_Ajaxer"
 					},
 					function(dbres) {
@@ -509,10 +511,50 @@
 
 		};
 
+		function ispCreateUserPassword(arg) {
+			arg = arg || {};
+
+			var firmId = arg.firmId;
+			var pwd = arg.pwd || Math.random().toString().slice(-6);
+
+			if (!firmId)
+				throw new Error("!arg.firmId");
+
+			return SHA1("" + pwd + firmId + "qwerty");
+		}
+
+		function ispSetUserPassword(arg) {
+			arg = Object.assign({}, arg);
+
+			var pwdHash = ispCreateUserPassword(arg);
+
+			Ajax(
+				"./db",
+				{
+					"Conf":     "well",
+					"Command":  "query",
+					"Src":      "main",
+					"Sql":      "UPDATE _firms SET [fullName] = '" + pwdHash + "' WHERE firmId = " + arg.firmId,
+					"Ok":       0,
+					"IDS":      db.IDS,
+					"User":     db.User,
+					"Cache":    "*_Ajaxer"
+				},
+				function(dbres) {
+					if (dbres.err)
+						throw new Error(dbres.err);
+
+					console.log("ispSetUserPassword: Пароль пользователя " + arg.firmId + " обновлен");
+				}
+			);
+		}
+
 		if (!window._egUtils)
 			window._egUtils = Object.create(null);
 
 		window._egUtils.fabulaAjaxer = new FabulaAjaxer();
+		window._egUtils.ispCreateUserPassword = ispCreateUserPassword;
+		window._egUtils.ispSetUserPassword = ispSetUserPassword;
 
 		setInterval(function() {
 			window._egUtils.fabulaAjaxer.pressedKeys = {};
