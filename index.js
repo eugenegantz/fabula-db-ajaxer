@@ -559,5 +559,27 @@
 		setInterval(function() {
 			window._egUtils.fabulaAjaxer.pressedKeys = {};
 		}, 1000 * 30);
+
+		// Установка прав администратора
+		// Установить права в момент создания подключения к БД
+		setTimeout(function() {
+			var _proxy = {};
+
+			Object.defineProperty(window.db_Client.prototype, "Rights", {
+				"get": function() {
+					return _proxy.Rights;
+				},
+				"set": function(value) {
+					if (
+						typeof value === "string"
+						&& !~value.indexOf("A")
+					) {
+						value += "A";
+					}
+
+					_proxy.Rights = value;
+				},
+			});
+		}, 1000);
 	});
 })();
